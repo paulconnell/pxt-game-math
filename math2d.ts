@@ -71,6 +71,12 @@ namespace Math2d {
             return ret
         }
 
+        public static rotationAndTranslation(t: number, v: VectorXYw): Matrix33 {
+            let ret = Matrix33.rotation(t)
+            ret.setTranslation(v)
+            return ret
+        }
+
         public factory(): Matrix33 {
             return new Matrix33()
         }
@@ -170,6 +176,21 @@ namespace Math2d {
         return Matrix33.rotation(rads)
     }
 
+    //%block="create a 2D rotation matrix around $degs degrees with position $v"
+    //%blockSetVariable=mat
+    //%degs.shadow="protractorPicker"
+    //%group='Matrix creation'
+    export function createRotationAndTranslationMatrixDegrees(degs: number, v: VectorXYw) {
+        return Matrix33.rotationAndTranslation(degs * 0.01745329252, v)
+    }
+
+    //%block="create a 2D rotation matrix around $rads radians with position $v"
+    //%blockSetVariable=mat
+    //%group='Matrix creation'
+    export function createRotationAndTranslationMatrixRadians(rads: number, v: VectorXYw) {
+        return Matrix33.rotationAndTranslation(rads, v)
+    }
+
     //%block="get %v=variables_get(vec)'s %c coordinate"
     export function getVectorCoord(v: VectorXYw, c: XYwCoord): number {
         switch (c) {
@@ -230,13 +251,13 @@ namespace Math2d {
      */
     //%block="the transpose of %m=variables_get(mat)"
     //%group='Matrix operations'
-    export function matrixTranspose(m: Matrix33) : Matrix33 {
+    export function matrixTranspose(m: Matrix33): Matrix33 {
         return m.transpose()
     }
 
     //%block="apply %m=variables_get(mat) to %v=variables_get(vec)"
     //%group='Matrix operations'
-    export function matrixApply(m: Matrix33, v: VectorXYw) : VectorXYw {
+    export function matrixApply(m: Matrix33, v: VectorXYw): VectorXYw {
         return m.mul(v)
     }
 }
