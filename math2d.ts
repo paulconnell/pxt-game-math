@@ -1,56 +1,107 @@
-// VECTOR METHODS
-enum XYwCoord {
+// seemed to need to be outside the namespace, for the fields to populate in the block editor
+enum XYCoord {
     //%block='x'
     X,
     //%block='y'
     Y,
-    //%block='w'
-    W
 }
 
 /**
  * Vector and Matrix classes to work in 2D
  */
-//% color=190 weight=100 icon="\uf1ec" block="2D Math"
+//% color=75 weight=100 icon="\uf1ec" block="Math2D"
 //% groups=['Vector creation', 'Vector operations', 'Matrix creation', 'Matrix operations]
 namespace Math2d {
-    export class VectorXYw extends Math2d3d.Vector {
+    export class VectorXY {
+        _: Array<number>
+
         private constructor() {
-            super()
+            this._ = []
         }
 
-        private init(x: number, y: number, w: number): VectorXYw {
+        private init(x: number, y: number, w: number): VectorXY {
             this._[0] = x; this._[1] = y; this._[2] = w
             return this
         }
 
-        public static position(x: number, y: number): VectorXYw {
-            return new VectorXYw().init(x, y, 1)
+        public static create(x: number, y: number): VectorXY {
+            return new VectorXY().init(x, y, 1)
         }
 
-        public static direction(x: number, y: number): VectorXYw {
-            return new VectorXYw().init(x, y, 0)
+        public static zero(): VectorXY {
+            return VectorXY.create(0, 0)
         }
 
-        public static zero(): VectorXYw {
-            return VectorXYw.direction(0, 0)
+        //%block="add %vec to %v=variables_get(vec2)"
+        //%group='Vector operations'
+        public add(v: VectorXY): any {
+            return VectorXY.create(this._[0] + v._[0], this._[1] + v._[1])
         }
 
-        public factory(): VectorXYw {
-            return new VectorXYw()
+        //%block="from %vec subtract %v=variables_get(vec2)"
+        //%group='Vector operations'
+        public sub(v: VectorXY): any {
+            return VectorXY.create(this._[0] - v._[0], this._[1] - v._[1])
+        }
+
+        //%block="scale %vec by %s"
+        //%group='Vector operations'
+        public scale(s: number): any {
+            return VectorXY.create(this._[0] * s, this._[1] * s)
+        }
+
+        //%block="compute the dot(scalar) product of %vec and %v=variables_get(vec2)"
+        //%group='Vector operations'
+        public dot(v: VectorXY): number {
+            return this._[0] * v._[0] + this._[1] * v._[1]
+        }
+
+        //%block="compute the squared magnitude of %vec"
+        //%group='Vector operations'
+        public magSquared(): number {
+            return this.dot(this)
+        }
+
+        //%block="compute the magnitude of %vec"
+        //%group='Vector operations'
+        public mag(): number {
+            return Math.sqrt(this.dot(this))
+        }
+
+        //%block="compute the magnitude of %vec"
+        //%group='Vector operations'
+        public normalize(): void {
+            let magR = 1 / this.mag()
+            return this.scale(magR)
+        }
+
+        //%block="get %v=variables_get(vec) . %c"
+        public getCoord(c: XYCoord): number {
+            switch (c) {
+                case XYCoord.X: return this.getX()
+                case XYCoord.Y: return this.getY()
+            }
+        }
+
+        //%block="set %v=variables_get(vec) . %c to %val"
+        public setCoord(c: XYCoord, val: number) {
+            switch (c) {
+                case XYCoord.X: this.setX(val)
+                case XYCoord.Y: this.setY(val)
+            }
         }
 
         public getX(): number { return this._[0] }
         public setX(val: number): void { this._[0] = val }
         public getY(): number { return this._[1] }
         public setY(val: number): void { this._[1] = val }
-        public getW(): number { return this._[2] }
-        public setW(val: number): void { this._[2] = val }
     }
 
-    export class Matrix33 extends Math2d3d.Matrix {
+    export class Matrix33 {
+        _: Array<number>
+
         private constructor() {
-            super()
+            this._ = []
         }
 
         public static identity(): Matrix33 {
@@ -71,88 +122,92 @@ namespace Math2d {
             return ret
         }
 
-        public static rotationAndTranslation(t: number, v: VectorXYw): Matrix33 {
+        public static rotationAndTranslation(t: number, v: VectorXY): Matrix33 {
             let ret = Matrix33.rotation(t)
             ret.setTranslation(v)
             return ret
         }
 
-        public factory(): Matrix33 {
-            return new Matrix33()
-        }
-
-        public mul(v: VectorXYw): VectorXYw {
-            let r = VectorXYw.zero()
+        //%block="apply %mat to %v=variables_get(vec)"
+        //%blockSetVariable=vec
+        //%group='Matrix operations'
+        public mul(v: VectorXY): VectorXY {
+            let r = VectorXY.zero()
             let _ = this._
 
-            /*
-            r._[0] = v.dot(this.getXAxis())
-            r._[1] = v.dot(this.getYAxis())
-            r._[2] = v.dot(this.getTranslation())
-            */
+            //implicit W coordinate in the vector
+            r._[0] = v._[0] * _[0] + v._[1] * _[3] + _[6]
+            r._[1] = v._[0] * _[1] + v._[1] * _[4] + _[7]
 
-            r._[0] = v._[0]*_[0] + v._[1]*_[3] + v._[2]*_[6]
-            r._[1] = v._[0]*_[1] + v._[1]*_[4] + v._[2]*_[7]
-            r._[2] = v._[0]*_[2] + v._[1]*_[5] + v._[2]*_[8]
-            
             return r
         }
 
-        public transpose(): Matrix33 {
+        //%block="the reverse transform of %mat"
+        //%blockSetVariable=mat
+        //%group='Matrix operations'
+        public reverse(): Matrix33 {
             let r = new Matrix33()
             let _ = this._
-            r._[0] = _[0]; r._[1] = _[3]; r._[2] = _[6]
-            r._[3] = _[1]; r._[4] = _[4]; r._[5] = _[7]
-            r._[6] = _[2]; r._[7] = _[5]; r._[8] = _[8]
+            r._[0] = _[0]; r._[1] = _[3]; r._[2] = 0
+            r._[3] = _[1]; r._[4] = _[4]; r._[5] = 0
+            r._[6] = -_[6]; r._[7] = _[7]; r._[8] = 1
             return r
         }
 
-        public getXAxis(): VectorXYw {
-            return VectorXYw.direction(this._[0], this._[1])
+        //%block="get %mat's Y-axis"
+        //%blockSetVariable=vec
+        //%group='Matrix operations'
+        public getXAxis(): VectorXY {
+            return VectorXY.create(this._[0], this._[1])
         }
 
-        public setXAxis(v: VectorXYw): void {
+        //%block="set %mat's X-axis to %v=variables_get(vec)"
+        //%group='Matrix operations'
+        public setXAxis(v: VectorXY): void {
             this._[0] = v._[0]; this._[1] = v._[1]; this._[2] = 0
         }
 
-        public getYAxis(): VectorXYw {
-            return VectorXYw.direction(this._[3], this._[4])
+        //%block="get %mat's Y-axis"
+        //%blockSetVariable=vec
+        //%group='Matrix operations'
+        public getYAxis(): VectorXY {
+            return VectorXY.create(this._[3], this._[4])
         }
 
-        public setYAxis(v: VectorXYw): void {
+        //%block="set %mat's Y-axis to %v=variables_get(vec)"
+        //%group='Matrix operations'
+        public setYAxis(v: VectorXY): void {
             this._[3] = v._[0]; this._[4] = v._[1]; this._[5] = 0
         }
 
-        public getTranslation(): VectorXYw {
-            return VectorXYw.position(this._[6], this._[7])
+        //%block="get %mat's translation"
+        //%blockSetVariable=vec
+        //%group='Matrix operations'
+        public getTranslation(): VectorXY {
+            return VectorXY.create(this._[6], this._[7])
         }
 
-        public setTranslation(v: VectorXYw) {
+        //%block="set %mat's translation to %v=variables_get(vec)"
+        //%group='Matrix operations'
+        public setTranslation(v: VectorXY) {
             this._[6] = v._[0]; this._[7] = v._[1]; this._[8] = 1
         }
     }
 
     // FACTORY METHODS
 
-    //%block="create a 2D position vector at coords (x %x, y %y)"
+    //%block="create a 2D vector of (%x, %y)"
     //%blockSetVariable=vec
     //%group='Vector creation'
-    export function createPositionVectorXYw(x: number, y: number) {
-        return VectorXYw.position(x, y)
-    }
-
-    //%block="create a 2D direction/offset vector of (x %x, y %y)"
-    //%blockSetVariable=vec
-    //%group='Vector creation'
-    export function createDirectionVectorXYw(x: number, y: number) {
-        return VectorXYw.direction(x, y)
+    export function createVectorXY(x: number, y: number) {
+        return VectorXY.create(x, y)
     }
 
     //%block="create a 2D vector which is all zeroes"
     //%blockSetVariable=vec
     //%group='Vector creation'
     export function createZeroVectorXYw() {
-        return VectorXYw.zero()
+        return VectorXY.zero()
     }
 
     //%block="create a 2D identity matrix"
@@ -181,84 +236,15 @@ namespace Math2d {
     //%blockSetVariable=mat
     //%degs.shadow="protractorPicker"
     //%group='Matrix creation'
-    export function createRotationAndTranslationMatrixDegrees(degs: number, v: VectorXYw) {
+    export function createRotationAndTranslationMatrixDegrees(degs: number, v: VectorXY) {
         return Matrix33.rotationAndTranslation(degs * 0.01745329252, v)
     }
 
-    //%block="create a 2D rotation matrix around $rads radians with position $v"
+    //%block="create a 2D rotation matrix around $rads radian with position $v"
     //%blockSetVariable=mat
+    //%degs.shadow="protractorPicker"
     //%group='Matrix creation'
-    export function createRotationAndTranslationMatrixRadians(rads: number, v: VectorXYw) {
+    export function createRotationAndTranslationMatrixRadians(rads: number, v: VectorXY) {
         return Matrix33.rotationAndTranslation(rads, v)
-    }
-
-    //%block="get %v=variables_get(vec)'s %c coordinate"
-    export function getVectorCoord(v: VectorXYw, c: XYwCoord): number {
-        switch (c) {
-            case XYwCoord.X: return v.getX()
-            case XYwCoord.Y: return v.getY()
-            case XYwCoord.W: return v.getW()
-        }
-    }
-
-    //%block="set %v=variables_get(vec)'s %c coordinate to %val"
-    export function setVectorCoord(v: VectorXYw, c: XYwCoord, val: number) {
-        switch (c) {
-            case XYwCoord.X: v.setX(val)
-            case XYwCoord.Y: v.setY(val)
-            case XYwCoord.W: v.setW(val)
-        }
-    }
-
-    //%block="compute the squared magnitude of %v=variables_get(vec)"
-    //%group='Vector operations'
-    export function vectorMagSquared(v: VectorXYw): number {
-        return v.magSquared()
-    }
-
-    //%block="compute the magnitude of %v=variables_get(vec)"
-    //%group='Vector operations'
-    export function vectorMag(v: VectorXYw): number {
-        return v.mag()
-    }
-
-    //%block="normalize %v=variables_get(vec)"
-    export function vectorNormalize(v: VectorXYw) {
-        v.normalize()
-    }
-
-    //%block="add %v1=variables_get(vec1) to %v2=variables_get(vec2)"
-    //%group='Vector operations'
-    export function vectorAdd(v1: VectorXYw, v2: VectorXYw): VectorXYw {
-        return v1.add(v2)
-    }
-
-    //%block="from %v1=variables_get(vec1) subtract %v2=variables_get(vec2)"
-    //%group='Vector operations'
-    export function vectorSub(v1: VectorXYw, v2: VectorXYw): VectorXYw {
-        return v1.sub(v2)
-    }
-
-    //%block="compute the dot(scalar) product of %v1=variables_get(vec1) and %v2=variables_get(vec2)"
-    //%group='Vector operations'
-    export function vectorDot(v1: VectorXYw, v2: VectorXYw): number {
-        return v1.dot(v2)
-    }
-
-    // MATRIX OPERATIONS
-
-    /**
-     * If the Matrix is well-formed, this is the same as inverse()
-     */
-    //%block="the transpose of %m=variables_get(mat)"
-    //%group='Matrix operations'
-    export function matrixTranspose(m: Matrix33): Matrix33 {
-        return m.transpose()
-    }
-
-    //%block="apply %m=variables_get(mat) to %v=variables_get(vec)"
-    //%group='Matrix operations'
-    export function matrixApply(m: Matrix33, v: VectorXYw): VectorXYw {
-        return m.mul(v)
     }
 }
