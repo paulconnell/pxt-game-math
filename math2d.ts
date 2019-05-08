@@ -122,6 +122,13 @@ namespace Math2d {
             return ret
         }
 
+        public static translation(v: VectorXY): Matrix33 {
+            let ret = Matrix33.identity()
+            ret._[6] = v._[0]
+            ret._[7] = v._[1]
+            return ret
+        }
+
         public static stretch(x: number, y: number): Matrix33 {
             let ret = Matrix33.identity()
             ret._[0] = x; ret._[4] = y
@@ -245,6 +252,13 @@ namespace Math2d {
     //%group='Matrix creation'
     export function createIdentityMatrix() {
         return Matrix33.identity()
+    }
+
+    //%block="create a 2D translation matrix from $v"
+    //%blockSetVariable=mat
+    //%group='Matrix creation'
+    export function createTranslationMatrix(v: VectorXY) {
+        return Matrix33.translation(v)
     }
 
     //%block="create a 2D rotation matrix around $degs degrees"
