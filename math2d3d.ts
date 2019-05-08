@@ -10,15 +10,15 @@ namespace Math2d3d {
             this._ = []
         }
 
-        public add(v: Vector): Vector {
-            let ret = this.factory()
+        public add(v: Vector): any {
+            let ret = v.factory()
             for (let i = 0; i < this._.length; i++) {
                 ret._[i] = this._[i] + v._[i]
             }
             return ret
         }
 
-        public sub(v: Vector): Vector {
+        public sub(v: Vector): any {
             let ret = this.factory()
             for (let i = 0; i < this._.length; i++) {
                 ret._[i] = this._[i] - v._[i]
@@ -26,7 +26,7 @@ namespace Math2d3d {
             return ret
         }
 
-        public scale(s: number): Vector {
+        public scale(s: number): any {
             let ret = this.factory()
             for (let i = 0; i < this._.length; i++) {
                 ret._[i] = ret._[i] * s
@@ -48,6 +48,13 @@ namespace Math2d3d {
 
         public mag(): number {
             return Math.sqrt(this.dot(this))
+        }
+
+        public normalize(): void {
+            let magR = 1 / this.mag()
+            for (let i = 0; i < this._.length; i++) {
+                this._[i] = this._[i] * magR
+            }
         }
     }
 
