@@ -122,6 +122,12 @@ namespace Math2d {
             return ret
         }
 
+        public static stretch(x: number, y: number): Matrix33 {
+            let ret = Matrix33.identity()
+            ret._[0] = x; ret._[4] = y
+            return ret
+        }
+
         public static rotationAndTranslation(t: number, v: VectorXY): Matrix33 {
             let ret = Matrix33.rotation(t)
             ret.setTranslation(v)
@@ -266,5 +272,12 @@ namespace Math2d {
     //%group='Matrix creation'
     export function createRotationAndTranslationMatrixRadians(rads: number, v: VectorXY) {
         return Matrix33.rotationAndTranslation(rads, v)
+    }
+
+    //%block="create a 2D stretch matrix x-axis by %x, y-axis by %y"
+    //%blockSetVariable=mat
+    //%group='Matrix creation'
+    export function createStretchMatrix(x: number, y: number) {
+        return Matrix33.stretch(x, y)
     }
 }
