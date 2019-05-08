@@ -228,7 +228,7 @@ namespace Math2d {
     /**
      * If the Matrix is well-formed, this is the same as inverse()
      */
-    //%block="normalize %m=variables_get(mat)"
+    //%block="the transpose of %m=variables_get(mat)"
     //%group='Matrix operations'
     export function matrixTranspose(m: Matrix33) : Matrix33 {
         return m.transpose()
