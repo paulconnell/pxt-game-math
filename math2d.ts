@@ -10,7 +10,7 @@ enum XYCoord {
  * Vector and Matrix classes to work in 2D
  */
 //% color=75 weight=100 icon="\uf1ec" block="Math2D"
-//% groups=['Vector creation', 'Vector operations', 'Matrix creation', 'Matrix operations]
+//% groups=['Vector creation', 'Vector operations', 'Matrix creation', 'Matrix operations', 'Sprite operations']
 namespace Math2d {
     export class VectorXY {
         _: Array<number>
@@ -283,5 +283,19 @@ namespace Math2d {
     //%group='Matrix creation'
     export function createStretchMatrix(x: number, y: number) {
         return Matrix33.stretch(x, y)
+    }
+
+    // SPRITE METHODS
+
+    //%block="set sprite %s=variables_get(spr) position to %v=variables_get(vec)"
+    //%group='Sprite operations'
+    export function setSpritePosition(s: Sprite, v: VectorXY) {
+        s.setPosition(v._[0], v._[1])
+    }
+
+    //%block="set sprite %s=variables_get(spr) velocity to %v=variables_get(vec)"
+    //%group='Sprite operations'
+    export function setSpriteVelocity(s: Sprite, v: VectorXY) {
+        s.setVelocity(v._[0], v._[1])
     }
 }
