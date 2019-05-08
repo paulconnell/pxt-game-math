@@ -176,7 +176,7 @@ namespace Math2d {
             let _ = this._
             r._[0] = _[0]; r._[1] = _[3]; r._[2] = 0
             r._[3] = _[1]; r._[4] = _[4]; r._[5] = 0
-            r._[6] =   0 ; r._[7] =   0 ; r._[8] = 1
+            r._[6] = 0; r._[7] = 0; r._[8] = 1
 
             let translateBack = Matrix33.identity()
             translateBack._[6] = -_[6];
@@ -297,5 +297,12 @@ namespace Math2d {
     //%group='Sprite operations'
     export function setSpriteVelocity(s: Sprite, v: VectorXY) {
         s.setVelocity(v._[0], v._[1])
+    }
+
+    //%block="set sprite %s=variables_get(spr) acceleration to %v=variables_get(vec)"
+    //%group='Sprite operations'
+    export function setSpriteAcceleration(s: Sprite, v: VectorXY) {
+        s.ax = v._[0]
+        s.ay = v._[1]
     }
 }
