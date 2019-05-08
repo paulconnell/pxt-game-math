@@ -65,8 +65,8 @@ namespace Math2d {
         public static rotation(t: number): Matrix33 {
             let ret = new Matrix33()
             let _ = ret._
-            _[0] = Math.cos(t); _[1] = -Math.sin(t); _[2] = 0
-            _[3] = Math.sin(t); _[4] = Math.cos(t); _[5] = 0
+            _[0] = Math.cos(t); _[1] = Math.sin(t); _[2] = 0
+            _[3] = -Math.sin(t); _[4] = Math.cos(t); _[5] = 0
             _[6] = 0; _[7] = 0; _[8] = 1
             return ret
         }
@@ -91,9 +91,10 @@ namespace Math2d {
             r._[2] = v.dot(this.getTranslation())
             */
 
-            r._[0] = _[0] * v._[0] + _[1] * v._[1] + _[2] * v._[2]
-            r._[1] = _[3] * v._[0] + _[4] * v._[1] + _[5] * v._[2]
-            r._[2] = _[6] * v._[0] + _[7] * v._[1] + _[8] * v._[2]
+            r._[0] = v._[0]*_[0] + v._[1]*_[3] + v._[2]*_[6]
+            r._[1] = v._[0]*_[1] + v._[1]*_[4] + v._[2]*_[7]
+            r._[2] = v._[0]*_[2] + v._[1]*_[5] + v._[2]*_[8]
+            
             return r
         }
 
