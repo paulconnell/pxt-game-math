@@ -176,8 +176,12 @@ namespace Math2d {
             let _ = this._
             r._[0] = _[0]; r._[1] = _[3]; r._[2] = 0
             r._[3] = _[1]; r._[4] = _[4]; r._[5] = 0
-            r._[6] = -_[6]; r._[7] = _[7]; r._[8] = 1
-            return r
+            r._[6] =   0 ; r._[7] =   0 ; r._[8] = 1
+
+            let translateBack = Matrix33.identity()
+            translateBack._[6] = -_[6];
+            translateBack._[7] = -_[7];
+            return translateBack.mul(r)
         }
 
         //%block="get %mat's Y-axis"
