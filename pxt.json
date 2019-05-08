@@ -7,11 +7,13 @@
     },
     "files": [
         "README.md",
-        "main.ts"
+        "main.ts",
+        "math2d3d.ts",
+        "math2d.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "public": false,
-    "additionalFilePaths": []
+    "installedVersion": "workspace:37ab5064-97ba-4eac-4731-29ad49cc63f4"
 }
