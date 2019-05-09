@@ -9,7 +9,6 @@
     "files": [
         "README.md",
         "main.ts",
-        "math2d3d.ts",
         "math2d.ts"
     ],
     "testFiles": [
