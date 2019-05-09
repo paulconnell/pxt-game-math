@@ -34,19 +34,19 @@ namespace Math2d {
 
         //%block="add %vec to %v=variables_get(vec2)"
         //%group='Vector operations'
-        public add(v: Vector): any {
+        public add(v: Vector): Vector {
             return Vector.create(this._[0] + v._[0], this._[1] + v._[1])
         }
 
         //%block="from %vec subtract %v=variables_get(vec2)"
         //%group='Vector operations'
-        public sub(v: Vector): any {
+        public sub(v: Vector): Vector {
             return Vector.create(this._[0] - v._[0], this._[1] - v._[1])
         }
 
         //%block="scale %vec by %s"
         //%group='Vector operations'
-        public scale(s: number): any {
+        public scale(s: number): Vector {
             return Vector.create(this._[0] * s, this._[1] * s)
         }
 
@@ -72,7 +72,7 @@ namespace Math2d {
         //%group='Vector operations'
         public normalize(): void {
             let magR = 1 / this.mag()
-            return this.scale(magR)
+            this.scale(magR)
         }
 
         //%block="get %v=variables_get(vec) . %c"
