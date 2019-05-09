@@ -11,7 +11,7 @@ enum XYCoord {
  */
 //% color=75 weight=100 icon="\uf1ec" block="Math2D"
 //% groups=['Vector creation', 'Vector operations', 'Matrix creation', 'Matrix operations', 'Sprite operations']
-namespace Math2d {    
+namespace Math2d {
     export class Vector {
         _: Array<number>
 
@@ -65,14 +65,17 @@ namespace Math2d {
         //%block="compute the magnitude of %vec"
         //%group='Vector operations'
         public mag(): number {
-            return Math.sqrt(this.dot(this))
+            return Math.sqrt(this.magSquared())
         }
 
         //%block="compute the magnitude of %vec"
         //%group='Vector operations'
         public normalize(): void {
-            let magR = 1 / this.mag()
-            this.scale(magR)
+            let mag = this.mag()
+            if (mag != 0) {
+                let magR = 1 / this.mag()
+                this.scale(magR)
+            }
         }
 
         //%block="get %v=variables_get(vec) . %c"
